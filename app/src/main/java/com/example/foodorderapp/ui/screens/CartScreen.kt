@@ -1,4 +1,4 @@
-package com.example.myapplication
+package com.example.foodorderapp.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -19,6 +19,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.foodorderapp.data.local.menuItems
+import com.example.foodorderapp.ui.components.MenuCard
+import com.example.foodorderapp.ui.viewmodel.CartViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -70,8 +73,8 @@ fun CartScreen(navController: NavController, viewModel: CartViewModel) {
                 NavigationBarItem(
                     selected = true,
                     onClick = { /* Stay here */ },
-                    icon = { 
-                        BadgedBox(badge = { 
+                    icon = {
+                        BadgedBox(badge = {
                             if (viewModel.getTotalItems() > 0) {
                                 Badge(containerColor = Color.Red) { Text("${viewModel.getTotalItems()}", color = Color.White) }
                             }
@@ -151,7 +154,7 @@ fun CartScreen(navController: NavController, viewModel: CartViewModel) {
                             }
                             Spacer(modifier = Modifier.height(20.dp))
                             Button(
-                                onClick = { 
+                                onClick = {
                                     // Kirim pesanan ke API Google Sheets
                                     viewModel.placeOrder("customer@example.com") {
                                         navController.navigate("order_status")

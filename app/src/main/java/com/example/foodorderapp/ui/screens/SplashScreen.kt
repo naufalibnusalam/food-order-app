@@ -1,4 +1,4 @@
-package com.example.myapplication
+package com.example.foodorderapp.ui.screens
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
@@ -25,15 +25,18 @@ import kotlinx.coroutines.delay
 fun SplashScreen(navController: NavController) {
     val pastelBlue = Color(0xFFAEC6CF)
     val pastelGreen = Color(0xFFB2E2D2)
-    
+
+    // State untuk memicu animasi saat layar pertama kali dimuat
     var startAnimation by remember { mutableStateOf(false) }
-    
+
+    // Animasi muncul perlahan (fade in)
     val alphaAnim = animateFloatAsState(
         targetValue = if (startAnimation) 1f else 0f,
         animationSpec = tween(durationMillis = 1000),
         label = "alpha"
     )
-    
+
+    // Animasi perbesaran logo (scaling)
     val scaleAnim = animateFloatAsState(
         targetValue = if (startAnimation) 1.2f else 0.8f,
         animationSpec = tween(
@@ -43,14 +46,15 @@ fun SplashScreen(navController: NavController) {
         label = "scale"
     )
 
+    // Logika jeda 2.5 detik sebelum pindah otomatis ke layar Login
     LaunchedEffect(key1 = true) {
         startAnimation = true
         delay(2500L)
         navController.navigate("login") {
-            popUpTo("splash") { inclusive = true }
+            popUpTo("splash") { inclusive = true } // Hapus splash dari history backstack
         }
     }
-    
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -61,7 +65,7 @@ fun SplashScreen(navController: NavController) {
             ),
         contentAlignment = Alignment.Center
     ) {
-        // Decorative background circles
+        // Lingkaran dekoratif di belakang logo
         Box(
             modifier = Modifier
                 .size(300.dp)
@@ -69,13 +73,14 @@ fun SplashScreen(navController: NavController) {
                 .alpha(alphaAnim.value * 0.1f)
                 .background(pastelGreen, CircleShape)
         )
-        
+
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .scale(scaleAnim.value * 0.8f)
                 .alpha(alphaAnim.value)
         ) {
+            // Ikon Restoran (Logo)
             Box(
                 modifier = Modifier
                     .size(120.dp)
@@ -89,17 +94,18 @@ fun SplashScreen(navController: NavController) {
                     tint = Color.White
                 )
             }
-            
+
             Spacer(modifier = Modifier.height(24.dp))
-            
+
+            // Nama Branding
             Text(
-                text = "Food Order App",
+                text = "Food Order",
                 fontSize = 32.sp,
                 fontWeight = FontWeight.ExtraBold,
                 color = Color(0xFF455A64),
                 letterSpacing = 2.sp
             )
-            
+
             Text(
                 text = "Enjoy your meal",
                 fontSize = 16.sp,
@@ -107,8 +113,8 @@ fun SplashScreen(navController: NavController) {
                 color = Color(0xFF757575).copy(alpha = 0.8f)
             )
         }
-        
-        // Bottom loading indicator feel
+
+        // Teks loading di bagian bawah
         Box(
             modifier = Modifier
                 .align(Alignment.BottomCenter)

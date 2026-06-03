@@ -1,18 +1,9 @@
-package com.example.myapplication
+package com.example.foodorderapp.data.local
 
 import androidx.compose.ui.graphics.Color
+import com.example.foodorderapp.model.MenuItem
 
-data class MenuItem(
-    val id: Int,
-    val name: String,
-    val price: Long,
-    val category: String,
-    val rating: Double,
-    val isPopular: Boolean,
-    val color: Color,
-    val imageUrl: String
-)
-
+// Daftar menu (database statis) untuk ditampilkan di aplikasi
 val menuItems = listOf(
     MenuItem(1, "Nasi Goreng Spesial", 25000, "Makanan", 4.8, true, Color(0xFFFFECB3), "https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&w=200&q=80"),
     MenuItem(2, "Beef Burger Deluxe", 45000, "Makanan", 4.9, true, Color(0xFFFFCCBC), "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=200&q=80"),

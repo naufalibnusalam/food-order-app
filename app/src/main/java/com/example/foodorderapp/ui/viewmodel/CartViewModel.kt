@@ -1,4 +1,4 @@
-package com.example.myapplication
+package com.example.foodorderapp.ui.viewmodel
 
 import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
@@ -7,6 +7,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.foodorderapp.data.local.menuItems
+import com.example.foodorderapp.data.model.OrderRequest
+import com.example.foodorderapp.data.remote.RetrofitClient
+import com.example.foodorderapp.model.MenuItem
 import com.google.gson.JsonSyntaxException
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
@@ -14,7 +18,7 @@ import java.io.IOException
 
 class CartViewModel : ViewModel() {
     val cartItems = mutableStateMapOf<Int, Int>()
-    
+
     // State untuk menampung data menu dari API
     val menuList = mutableStateListOf<MenuItem>()
     val isLoading = mutableStateOf(false)

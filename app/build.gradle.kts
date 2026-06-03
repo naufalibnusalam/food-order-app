@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.myapplication"
+    namespace = "com.example.foodorderapp"
     compileSdk {
         version = release(36) {
             minorApiLevel = 1
@@ -12,7 +12,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.example.myapplication"
+        applicationId = "com.example.foodorderapp"
         minSdk = 24
         targetSdk = 36
         versionCode = 1
@@ -48,21 +48,6 @@ dependencies {
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
-
-    // Navigation Compose
-    implementation("androidx.navigation:navigation-compose:2.7.7")
-    // Icons
-    implementation("androidx.compose.material:material-icons-extended")
-    // Coil for Image Loading
-    implementation("io.coil-kt:coil-compose:2.7.0")
-    // ViewModel
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.2")
-
-    // Retrofit & GSON Converter
-    implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
-    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
-
     testImplementation(libs.junit)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
@@ -70,4 +55,18 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     debugImplementation(libs.androidx.compose.ui.tooling)
+
+    // Library untuk navigasi antar halaman (Jetpack Navigation)
+    implementation("androidx.navigation:navigation-compose:2.7.7")
+    // Kumpulan ikon tambahan dari Material Design
+    implementation("androidx.compose.material:material-icons-extended")
+    // Library Coil untuk menampilkan gambar secara efisien dari URL/Internet
+    implementation("io.coil-kt:coil-compose:2.7.0")
+    // Library ViewModel untuk mengelola data (state) agar tidak hilang saat rotasi layar atau pindah halaman
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.2")
+
+    // Retrofit & GSON Converter
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
 }
