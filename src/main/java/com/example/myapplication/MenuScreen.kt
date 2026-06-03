@@ -41,10 +41,20 @@ fun MenuScreen(navController: NavController, viewModel: CartViewModel) {
     var selectedCategory by remember { mutableStateOf("Semua") }
     val categories = listOf("Semua", "Makanan", "Minuman", "Cemilan")
     
+    // Ambil data dari API saat layar pertama kali dibuka
+    LaunchedEffect(Unit) {
+        if (viewModel.menuList.isEmpty()) {
+            viewModel.fetchMenu()
+        }
+    }
+
+    // Gunakan data dari API jika tersedia, jika tidak gunakan data lokal (fallback)
+    val displayMenu = if (viewModel.menuList.isNotEmpty()) viewModel.menuList else menuItems
+    
     val filteredMenu = if (selectedCategory == "Semua") {
-        menuItems
+        displayMenu
     } else {
-        menuItems.filter { it.category == selectedCategory }
+        displayMenu.filter { it.category == selectedCategory }
     }
 
     val totalItems = viewModel.getTotalItems()
@@ -131,53 +141,60 @@ fun MenuScreen(navController: NavController, viewModel: CartViewModel) {
             }
         }
     ) { padding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .background(SoftGray)
-        ) {
-            // Category Filter
-            LazyRow(
-                modifier = Modifier.padding(vertical = 16.dp),
-                contentPadding = PaddingValues(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
+        Box(modifier = Modifier.padding(padding)) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(SoftGray)
             ) {
-                items(categories) { category ->
-                    FilterChip(
-                        selected = selectedCategory == category,
-                        onClick = { selectedCategory = category },
-                        label = { Text(category, fontWeight = if(selectedCategory == category) FontWeight.Bold else FontWeight.Normal) },
-                        colors = FilterChipDefaults.filterChipColors(
-                            selectedContainerColor = PastelBlue,
-                            selectedLabelColor = Color.White,
-                            containerColor = Color.White,
-                            labelColor = TextGray
-                        ),
-                        border = FilterChipDefaults.filterChipBorder(
-                            enabled = true,
+                // Category Filter
+                LazyRow(
+                    modifier = Modifier.padding(vertical = 16.dp),
+                    contentPadding = PaddingValues(horizontal = 16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    items(categories) { category ->
+                        FilterChip(
                             selected = selectedCategory == category,
-                            borderColor = if(selectedCategory == category) Color.Transparent else Color(0xFFE0E0E0),
-                            borderWidth = 1.dp,
-                            selectedBorderColor = Color.Transparent,
-                            selectedBorderWidth = 0.dp
-                        ),
-                        shape = RoundedCornerShape(12.dp)
-                    )
+                            onClick = { selectedCategory = category },
+                            label = { Text(category, fontWeight = if(selectedCategory == category) FontWeight.Bold else FontWeight.Normal) },
+                            colors = FilterChipDefaults.filterChipColors(
+                                selectedContainerColor = PastelBlue,
+                                selectedLabelColor = Color.White,
+                                containerColor = Color.White,
+                                labelColor = TextGray
+                            ),
+                            border = FilterChipDefaults.filterChipBorder(
+                                enabled = true,
+                                selected = selectedCategory == category,
+                                borderColor = if(selectedCategory == category) Color.Transparent else Color(0xFFE0E0E0),
+                                borderWidth = 1.dp,
+                                selectedBorderColor = Color.Transparent,
+                                selectedBorderWidth = 0.dp
+                            ),
+                            shape = RoundedCornerShape(12.dp)
+                        )
+                    }
                 }
-            }
 
-            LazyColumn(
-                contentPadding = PaddingValues(bottom = 100.dp)
-            ) {
-                items(filteredMenu) { item ->
-                    MenuCard(
-                        item = item,
-                        quantity = viewModel.cartItems[item.id] ?: 0,
-                        onUpdateQuantity = { newQty ->
-                            viewModel.updateQuantity(item.id, newQty)
+                if (viewModel.isLoading.value && viewModel.menuList.isEmpty()) {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator(color = PastelBlue)
+                    }
+                } else {
+                    LazyColumn(
+                        contentPadding = PaddingValues(bottom = 100.dp)
+                    ) {
+                        items(filteredMenu) { item ->
+                            MenuCard(
+                                item = item,
+                                quantity = viewModel.cartItems[item.id] ?: 0,
+                                onUpdateQuantity = { newQty ->
+                                    viewModel.updateQuantity(item.id, newQty)
+                                }
+                            )
                         }
-                    )
+                    }
                 }
             }
         }

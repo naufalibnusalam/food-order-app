@@ -11,7 +11,7 @@ import androidx.compose.material.icons.automirrored.filled.Assignment
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,8 +25,19 @@ import androidx.navigation.NavController
 fun CartScreen(navController: NavController, viewModel: CartViewModel) {
     val cartItems = viewModel.cartItems
     val totalPrice = viewModel.getTotalPrice()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val errorMessage by viewModel.errorMessage
+
+    // Menampilkan Snackbar jika ada error
+    LaunchedEffect(errorMessage) {
+        errorMessage?.let {
+            snackbarHostState.showSnackbar(it)
+            viewModel.errorMessage.value = null // Reset error setelah ditampilkan
+        }
+    }
 
     Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             TopAppBar(
                 title = { Text("Keranjang Saya", fontWeight = FontWeight.SemiBold, color = TextGray) },
@@ -141,14 +152,21 @@ fun CartScreen(navController: NavController, viewModel: CartViewModel) {
                             Spacer(modifier = Modifier.height(20.dp))
                             Button(
                                 onClick = { 
-                                    // Normally we would place order here
-                                    navController.navigate("order_status")
+                                    // Kirim pesanan ke API Google Sheets
+                                    viewModel.placeOrder("customer@example.com") {
+                                        navController.navigate("order_status")
+                                    }
                                 },
                                 modifier = Modifier.fillMaxWidth(),
                                 shape = RoundedCornerShape(16.dp),
-                                colors = ButtonDefaults.buttonColors(containerColor = PastelGreen)
+                                colors = ButtonDefaults.buttonColors(containerColor = PastelGreen),
+                                enabled = !viewModel.isLoading.value
                             ) {
-                                Text("Pesan Sekarang", color = Color(0xFF43A047), fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                                if (viewModel.isLoading.value) {
+                                    CircularProgressIndicator(modifier = Modifier.size(24.dp), color = Color.White)
+                                } else {
+                                    Text("Pesan Sekarang", color = Color(0xFF43A047), fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                                }
                             }
                         }
                     }
